@@ -2,7 +2,11 @@
 
 .page-node #content-wrap .openlayers-container img, 
 .geofieldMap img {
-    max-width: none;
+  max-width: none;
+  border: 0;
+  padding: 0;
+  height: auto;
+  margin: 0;
 }
 
 #edit-field-geofield-distance-distance {
