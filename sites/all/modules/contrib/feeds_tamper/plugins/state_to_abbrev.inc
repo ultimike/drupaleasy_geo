@@ -4,32 +4,40 @@
  * @file
  * Convert a full U.S. state name to a 2-letter abbreviation.
  */
+
 $plugin = array(
-  'form'  =>  'feeds_tamper_state_to_abbrev_form',
-  'callback'  =>  'feeds_tamper_state_to_abbrev_callback',
-  'name'  =>  'Full U.S. state name to abbrev',
-  'multi'  =>  'loop',
-  'category'  =>  'Other',
-  'default description'  =>  'Full state name to abbrev',
+  'form' => 'feeds_tamper_state_to_abbrev_form',
+  'callback' => 'feeds_tamper_state_to_abbrev_callback',
+  'name' => 'Full U.S. state name to abbrev.',
+  'multi' => 'loop',
+  'category' => 'Other',
+  'default description' => 'Full state name to abbrev',
 );
 
 function feeds_tamper_state_to_abbrev_form($importer, $element_key, $settings) {
   $form = array();
   $form['help'] = array(
-    '#markup'  =>  t('Converts this field from a full state name name string to the two character abbreviation.'),
+    '#markup' => t('Converts this field from a full state name name string to the two character abbreviation.'),
   );
+
   return $form;
 }
 
 function feeds_tamper_state_to_abbrev_callback($result, $item_key, $element_key, &$field, $settings) {
-  static $states = array();
+  static $states;
 
-  if (empty($states)) {
+  if (!$states) {
     $states = _feeds_tamper_state_to_abbrev_states_get_list();
   }
 
-  //Trim whitespace, set to lowercase.
-  $state = t(drupal_strtolower(trim($field)));
+  // If it's already a valid state abbreviation, leave it alone.
+  if (in_array($field, $states)) {
+    return;
+  }
+
+  // Trim whitespace, set to lowercase.
+  $state = drupal_strtolower(trim($field));
+
   if (isset($states[$state])) {
     $field = $states[$state];
   }
@@ -99,11 +107,8 @@ function _feeds_tamper_state_to_abbrev_states_get_list() {
     'washington' => 'WA',
     'west virginia' => 'WV',
     'wisconsin' => 'WI',
-    'wyoming' => 'WY'
+    'wyoming' => 'WY',
   );
+
   return $states;
 }
-
-//function _feeds_tamper_state_to_abbrev_strtolower(&$word) {
-//  $word = drupal_strtolower($word);
-//}
